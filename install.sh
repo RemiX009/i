@@ -11,23 +11,38 @@ echo "Mizan POS Bootstrap Installer"
 echo "=================================================="
 echo
 
-if ! command -v curl >/dev/null 2>&1 || ! command -v tmux >/dev/null 2>&1; then
-  echo "Installing required tools..."
+sudo apt-get update
+sudo apt-get install -y curl ca-certificates git tmux
+
+if ! command -v gh >/dev/null 2>&1; then
+  echo "Installing GitHub CLI..."
+  curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | \
+    sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg >/dev/null
+
+  sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
+
+  echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | \
+    sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null
+
   sudo apt-get update
-  sudo apt-get install -y curl ca-certificates tmux
+  sudo apt-get install -y gh
 fi
 
-read -rsp "GitHub token for private POS repo: " GITHUB_TOKEN </dev/tty
-echo >/dev/tty
+if ! gh auth status >/dev/null 2>&1; then
+  echo
+  echo "GitHub login required."
+  echo "You will see a short code. Open the shown URL on your normal PC/phone and enter the code."
+  echo
 
-if [ -z "$GITHUB_TOKEN" ]; then
-  echo "GitHub token is required because the POS repository is private."
-  exit 1
+  gh auth login --hostname github.com --git-protocol https --web
 fi
 
-INSTALLER="/tmp/install-mizan-pos-standalone.sh"
+GITHUB_TOKEN="$(gh auth token)"
 
-echo "Downloading Mizan POS installer from GitHub..."
+INSTALLER="$HOME/install-mizan-pos-standalone.sh"
+
+echo
+echo "Downloading Mizan POS installer..."
 
 curl -fsSL \
   -H "Authorization: Bearer $GITHUB_TOKEN" \
@@ -43,8 +58,4 @@ echo "If SSH disconnects, reconnect and run:"
 echo "tmux attach -t mizan-install"
 echo
 
-export GITHUB_TOKEN
-
 tmux new -s mizan-install "sudo GITHUB_TOKEN=\"$GITHUB_TOKEN\" bash \"$INSTALLER\"; echo; read -rp 'Installer finished. Press Enter to close...'"
-
-unset GITHUB_TOKEN
