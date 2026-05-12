@@ -17,8 +17,8 @@ if ! command -v curl >/dev/null 2>&1 || ! command -v tmux >/dev/null 2>&1; then
   sudo apt-get install -y curl ca-certificates tmux
 fi
 
-read -rsp "GitHub token for private POS repo: " GITHUB_TOKEN
-echo
+read -rsp "GitHub token for private POS repo: " GITHUB_TOKEN </dev/tty
+echo >/dev/tty
 
 if [ -z "$GITHUB_TOKEN" ]; then
   echo "GitHub token is required because the POS repository is private."
