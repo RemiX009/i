@@ -5,7 +5,7 @@ REPO_OWNER="RemiX009"
 PRIVATE_REPO="Mizan-pos-system"
 UPDATE_PATH="deployment/update-mizan-pos.sh"
 SCRIPT_REF="${MIZAN_SCRIPT_REF:-main}"
-MIZAN_REF="${MIZAN_REF:-v2.5-stable}"
+MIZAN_REF="${MIZAN_REF:-v2.6.3}"
 
 echo "=================================================="
 echo "Mizan POS Update Bootstrap"
