@@ -3,6 +3,6 @@ set -euo pipefail
 
 # Default update target. Override with:
 # MIZAN_REF=main bash <(curl -fsSL https://remix009.github.io/i/u)
-export MIZAN_REF="${MIZAN_REF:-v2.6.6}"
+export MIZAN_REF="${MIZAN_REF:-v2.6.8}"
 
 bash <(curl -fsSL https://remix009.github.io/i/update.sh)
